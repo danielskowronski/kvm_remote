@@ -22,7 +22,7 @@ void loop() {
 }
 ```
 
-## USB
+## USB: AIMOS AM-404CY KVM 4 port
 ```
 PC1 Protocol=NEC Address=0x1  Command=0x3  Raw-Data=0xFC03FE01 32 bits LSB first
 PC2 Protocol=NEC Address=0x1  Command=0x0  Raw-Data=0xFF00FE01 32 bits LSB first
@@ -31,7 +31,7 @@ PC4 Protocol=NEC Address=0x1  Command=0x4  Raw-Data=0xFB04FE01 32 bits LSB first
 TGL Protocol=NEC Address=0x1  Command=0x1F Raw-Data=0xE01FFE01 32 bits LSB first
 ```
 
-## HDMI
+## HDMI: Caneov 4X2 Hdmi2.0 Matrix Switch Splitter 4K60Hz Switcher (HDMX402)
 ```
 A_1 Protocol=NEC Address=0x80 Command=0x1  Raw-Data=0xFE017F80 32 bits LSB first
 A_2 Protocol=NEC Address=0x80 Command=0x2  Raw-Data=0xFD027F80 32 bits LSB first
