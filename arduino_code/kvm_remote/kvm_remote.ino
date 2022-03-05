@@ -35,41 +35,42 @@
 void setup() {
   Serial.begin(115200);
   IrSender.begin(); // this library on ESP32 ignores every form of providing send pin and uses GPIO4
-  print_wakeup_reason();
+
   uint64_t GPIO_reason = esp_sleep_get_ext1_wakeup_status();
   Serial.print("GPIO that triggered the wake up: GPIO ");
-  Serial.println((log(GPIO_reason))/log(2), 0);
+  int reason = (log(GPIO_reason))/log(2);
+  Serial.println(reason, 0);
+  
   delay(500);
+
+  if (reason==34) setPC1();
+  else if (reason==35) setPC2();
+  
   esp_sleep_enable_ext1_wakeup(BUTTON_PIN_BITMASK,ESP_EXT1_WAKEUP_ANY_HIGH);
   //esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH, ESP_PD_OPTION_ON);
 
+  pinMode(0, OUTPUT); 
+  digitalWrite(0, LOW);
+
   esp_deep_sleep_start();
 }
-void print_wakeup_reason(){
-  esp_sleep_wakeup_cause_t wakeup_reason;
 
-  wakeup_reason = esp_sleep_get_wakeup_cause();
-
-  switch(wakeup_reason)
-  {
-    case ESP_SLEEP_WAKEUP_EXT0 : Serial.println("Wakeup caused by external signal using RTC_IO"); break;
-    case ESP_SLEEP_WAKEUP_EXT1 : Serial.println("Wakeup caused by external signal using RTC_CNTL"); break;
-    case ESP_SLEEP_WAKEUP_TIMER : Serial.println("Wakeup caused by timer"); break;
-    case ESP_SLEEP_WAKEUP_TOUCHPAD : Serial.println("Wakeup caused by touchpad"); break;
-    case ESP_SLEEP_WAKEUP_ULP : Serial.println("Wakeup caused by ULP program"); break;
-    default : Serial.printf("Wakeup was not caused by deep sleep: %d\n",wakeup_reason); break;
-  }
-}
 void setPC1(){
-  IrSender.sendNEC(USB__ADR, USB__PC1, 0, false);
-  IrSender.sendNEC(0x80, HDMI_A_3, 0, false);
-  delay(500);
-  IrSender.sendNEC(HDMI_ADR, HDMI_B_4, 0, false);
+  Serial.printf("PC1 (priv): USB2, HDMI3+4\n");
+  delay(100);  
+  IrSender.sendNEC(USB__ADR, USB__PC2, 0, false);
+  delay(100);
+  IrSender.sendNEC(HDMI_ADR, HDMI_A_3, 3, false);
+  delay(250);
+  IrSender.sendNEC(HDMI_ADR, HDMI_B_4, 3, false);
 }
 void setPC2(){
-  IrSender.sendNEC(USB__ADR, USB__PC2, 0, false);
+  Serial.printf("PC2 (corp): USB4, HDMI1+2\n");
+  delay(100);  
+  IrSender.sendNEC(USB__ADR, USB__PC4, 0, false);
+  delay(100);
   IrSender.sendNEC(HDMI_ADR, HDMI_A_1, 3, false);
-  delay(500);
+  delay(250);
   IrSender.sendNEC(HDMI_ADR, HDMI_B_2, 3, false);
 }
 
